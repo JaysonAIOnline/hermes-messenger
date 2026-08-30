@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0b1020" />
+<title>Hermes Messenger</title>
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="apple-touch-icon" href="/icon.svg" />
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<div id="auth" class="auth">
+  <div class="auth-card">
+    <h1>🔗 Hermes Messenger</h1>
+    <p class="muted">Talk to your friends and your Hermes bots like contacts.</p>
+    <div class="tabs">
+      <button id="tab-login" class="tab active">Login</button>
+      <button id="tab-signup" class="tab">Sign up</button>
+    </div>
+    <input id="username" placeholder="Username" autocomplete="username" />
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
+    <button id="auth-btn" class="primary">Login</button>
+    <div id="auth-msg" class="msg"></div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <div class="side-head">
+      <span id="me" class="me"></span>
+      <button id="logout" title="Log out">⏻</button>
+    </div>
+    <div class="search"><input id="search" placeholder="Search contacts" /></div>
+    <ul id="contacts" class="contacts"></ul>
+  </aside>
+  <main class="chat">
+    <header id="chat-head" class="chat-head">Select a contact</header>
+    <div id="messages" class="messages"></div>
+    <div id="typing" class="typing"></div>
+    <form id="composer" class="composer">
+      <input id="input" placeholder="Message…" autocomplete="off" disabled />
+      <button id="send" class="primary" disabled>➤</button>
+    </form>
+  </main>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>
