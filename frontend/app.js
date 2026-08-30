@@ -1,4 +1,4 @@
-const API = "";
+const API = (window.BACKEND || "").replace(/\/$/, "");
 let token = localStorage.getItem("hm_token") || "";
 let me = null;
 let ws = null;
@@ -59,8 +59,10 @@ async function enterApp() {
 }
 
 function connectWs() {
-  const proto = location.protocol === "https:" ? "wss" : "ws";
-  ws = new WebSocket(`${proto}://${location.host}/ws?token=${token}`);
+  const backend = window.BACKEND || (location.protocol + "//" + location.host);
+  const u = new URL(backend);
+  const proto = u.protocol === "https:" ? "wss" : "ws";
+  ws = new WebSocket(`${proto}://${u.host}/ws?token=${token}`);
   ws.onmessage = (ev) => {
     const m = JSON.parse(ev.data);
     if (m.type === "ready") renderContacts(m.contacts);
