@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Optional
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -34,6 +35,14 @@ BOTS = json.loads(os.environ.get("MESSENGER_BOTS", '[{"id":"hermes","name":"Herm
 BOT_TIMEOUT = int(os.environ.get("MESSENGER_BOT_TIMEOUT", "300"))
 
 app = FastAPI(title="Hermes Messenger")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ---------------------------------------------------------------------------
 # DB helpers
