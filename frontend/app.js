@@ -1,6 +1,7 @@
 const API = (window.BACKEND || "").replace(/\/$/, "");
 let token = localStorage.getItem("hm_token") || "";
 let me = null;
+let myId = null;
 let ws = null;
 let active = null; // {id, name, type, conversation_id}
 
@@ -37,6 +38,7 @@ $("#auth-btn").onclick = async () => {
       : await api("/api/auth/login", { method: "POST", body: JSON.stringify({ username, password }) });
     token = data.token;
     me = data.username;
+    myId = data.user_id;
     localStorage.setItem("hm_token", token);
     enterApp();
   } catch (e) {
@@ -115,10 +117,13 @@ function addBubble(m) {
   $("#messages").appendChild(div);
   $("#messages").scrollTop = $("#messages").scrollHeight;
 }
-function myUid() { return me; } // used only for styling; server is source of truth
+function myUid() { return myId; } // used only for styling; server is source of truth
 
 function onMessage(m) {
-  if (active && m.conversation_id === active.conversation_id) addBubble(m);
+  if (active && m.to === active.id) {
+    if (m.conversation_id) active.conversation_id = m.conversation_id;
+    addBubble(m);
+  }
   $("#typing").textContent = "";
 }
 
@@ -133,7 +138,7 @@ async function send() {
   $("#input").value = "";
   const payload = { to: active.id, body, kind: active.type };
   // optimistic local bubble
-  addBubble({ sender_id: me, body, conversation_id: active.conversation_id || 0 });
+  addBubble({ sender_id: myId, body, conversation_id: active.conversation_id || 0 });
   try {
     if (ws && ws.readyState === 1) {
       ws.send(JSON.stringify({ type: "send", to: active.id, body }));

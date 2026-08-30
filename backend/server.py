@@ -176,7 +176,7 @@ def ensure_conversation(kind: str, uid: int, other: str) -> int:
     cx.close()
     return cid
 
-async def persist_and_deliver(conversation_id: int, sender_id: int, body: str, to_uid: int | None):
+async def persist_and_deliver(conversation_id: int, sender_id: int, body: str, to_uid: int | None, to_str: str | None = None):
     cx = db()
     cur = cx.execute(
         "INSERT INTO messages (conversation_id, sender_id, body, created_at) VALUES (?,?,?,?)",
@@ -186,7 +186,7 @@ async def persist_and_deliver(conversation_id: int, sender_id: int, body: str, t
     cx.commit()
     cx.close()
     payload = {"type": "message", "conversation_id": conversation_id, "sender_id": sender_id,
-               "body": body, "message_id": mid, "ts": time.time()}
+               "body": body, "message_id": mid, "ts": time.time(), "to": to_str}
     if to_uid is not None:
         for ws in conns.get(to_uid, []):
             try:
@@ -393,7 +393,8 @@ async def ws(websocket: WebSocket):
                         for ws in conns.get(ou, []):
                             try:
                                 await ws.send_json({"type": "message", "conversation_id": cid,
-                                                    "sender_id": uid, "body": body, "message_id": mid, "ts": time.time()})
+                                                    "sender_id": uid, "body": body, "message_id": mid,
+                                                    "ts": time.time(), "to": f"u:{uid}"})
                             except Exception:
                                 pass
                 else:
@@ -410,7 +411,8 @@ async def ws(websocket: WebSocket):
                         for ws in conns.get(uid, []):
                             try:
                                 await ws.send_json({"type": "message", "conversation_id": cid,
-                                                    "sender_id": 0, "body": reply, "message_id": mid, "ts": time.time()})
+                                                    "sender_id": 0, "body": reply, "message_id": mid,
+                                                    "ts": time.time(), "to": to})
                             except Exception:
                                 pass
     except WebSocketDisconnect:
