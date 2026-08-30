@@ -1,0 +1,11 @@
+services:
+  messenger:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      MESSENGER_DB: /data/messenger.db
+      MESSENGER_BOTS: '[{"id":"hermes","name":"Hermes","profile":""}]'
+      MESSENGER_BOT_TIMEOUT: "300"
+    volumes:
+      - ./data:/data

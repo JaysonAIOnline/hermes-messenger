@@ -1,0 +1,23 @@
+# Byte-compiled / cache
+__pycache__/
+*.pyc
+*.pyo
+
+# App data / database
+*.db
+data/
+backend/messenger.db
+
+# Python venv
+.venv/
+venv/
+
+# Local env
+.env
+
+# Editor
+.idea/
+.vscode/
+
+# Docker volumes
+data/

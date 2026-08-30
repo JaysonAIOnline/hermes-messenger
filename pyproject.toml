@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hermes-messenger"
+version = "0.1.0"
+description = "Self-hosted messenger PWA: chat with people and your Hermes bots as contacts."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+    "websockets>=12.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-org/hermes-messenger"
+
+[project.scripts]
+hermes-messenger = "server:app"
+
+[tool.setuptools]
+py-modules = ["server"]
